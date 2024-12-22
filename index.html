@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+
+        .battlefield {
+            width: 800px;
+            height: 400px;
+            border: 2px solid black;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .heart {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background-color: red;
+            clip-path: path('M25,9.977c-10.434-7.4-25.69,1.038-25.69,13.558c0,12.943,25.69,29.465,25.69,29.465s25.69-16.521,25.69-29.465C50.69,11.015,35.434,2.577,25,9.977z');
+            transition: all 1s ease;
+        }
+
+        .heart.hit {
+            background-color: black;
+            transform: scale(0.8);
+        }
+
+        .suriken {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background-color: silver;
+            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+            transition: transform 0.1s linear;
+        }
+    </style>
+</head>
+<body>
+    <div class="battlefield" id="battlefield"></div>
+    <button id="throwButton">Lempar Suriken</button>
+
+    <script>
+    class HeartBattle {
+        constructor() {
+            this.battlefield = document.getElementById('battlefield');
+            this.throwButton = document.getElementById('throwButton');
+            this.hearts = [];
+            this.battlefieldRect = this.battlefield.getBoundingClientRect();
+
+            this.createHearts(5);
+            this.setupEventListeners();
+        }
+
+        createHearts(count) {
+            for (let i = 0; i < count; i++) {
+                const heart = this.createHeart();
+                this.hearts.push(heart);
+            }
+        }
+
+        createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            
+            this.randomizeHeartPosition(heart);
+            this.battlefield.appendChild(heart);
+            
+            this.animateHeart(heart);
+            
+            return heart;
+        }
+
+        randomizeHeartPosition(heart) {
+            heart.style.left = `${Math.random() * (this.battlefieldRect.width - 50)}px`;
+            heart.style.top = `${Math.random() * (this.battlefieldRect.height - 50)}px`;
+        }
+
+        animateHeart(heart) {
+            const moveHeart = () => {
+                if (!heart.classList.contains('hit')) {
+                    // Gerakan yang lebih ekstrem
+                    const moveStyle = Math.random();
+
+                    if (moveStyle < 0.25) {
+                        // Lompatan besar
+                        heart.style.left = `${Math.random() * (this.battlefieldRect.width - 50)}px`;
+                        heart.style.top = `${Math.random() * (this.battlefieldRect.height - 50)}px`;
+                    } else if (moveStyle < 0.5) {
+                        // Bergerak ke sudut
+                        heart.style.left = moveStyle < 0.25 ? '0px' : `${this.battlefieldRect.width - 50}px`;
+                        heart.style.top = moveStyle < 0.25 ? '0px' : `${this.battlefieldRect.height - 50}px`;
+                    } else {
+                        // Geser sedikit
+                        const currentLeft = parseFloat(heart.style.left);
+                        const currentTop = parseFloat(heart.style.top);
+                        
+                        heart.style.left = `${currentLeft + (Math.random() * 100 - 50)}px`;
+                        heart.style.top = `${currentTop + (Math.random() * 100 - 50)}px`;
+                    }
+                }
+                
+                // Interval pergerakan
+                setTimeout(moveHeart, Math.random() * 1000 + 500);
+            };
+            
+            moveHeart();
+        }
+
+        setupEventListeners() {
+            this.throwButton.addEventListener('click', () => this.throwSuriken());
+        }
+
+        throwSuriken() {
+            const suriken = document.createElement('div');
+            suriken.classList.add('suriken');
+            
+            suriken.style.left = '0px';
+            suriken.style.top = '200px';
+            
+            this.battlefield.appendChild(suriken);
+            this.animateSurikenZigZag(suriken);
+        }
+
+        animateSurikenZigZag(suriken) {
+            let posX = 0;
+            let posY = 200;
+            let direction = 1;
+            let zigzagAmplitude = 50;
+
+            const animate = () => {
+                posX += 10;
+                posY += direction * 5;
+
+                // Ubah arah zigzag
+                if (Math.abs(posY - 200) > zigzagAmplitude) {
+                    direction *= -1;
+                }
+
+                suriken.style.left = `${posX}px`;
+                suriken.style.top = `${posY}px`;
+
+                // Rotasi suriken
+                suriken.style.transform = `rotate(${posX}deg)`;
+
+                // Cek tabrakan
+                this.hearts.forEach(heart => {
+                    if (this.checkCollision(suriken, heart)) {
+                        heart.classList.add('hit');
+                    }
+                });
+
+                // Lanjutkan atau hentikan animasi
+                if (posX < this.battlefieldRect.width) {
+                    requestAnimationFrame(animate);
+                } else {
+                    suriken.remove();
+                }
+            };
+
+            requestAnimationFrame(animate);
+        }
+
+        checkCollision(a, b) {
+            const aRect = a.getBoundingClientRect();
+            const bRect = b.getBoundingClientRect();
+
+            return !(
+                aRect.top > bRect.bottom ||
+                aRect.right < bRect.left ||
+                aRect.bottom < bRect.top ||
+                aRect.left > bRect.right
+            );
+        }
+    }
+
+    // Inisialisasi pertarungan hati
+    new HeartBattle();
+    </script>
+</body>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animasi Bunga Mekar dan Barakallah</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f8ff;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+            flex-direction: column; /* Mengatur arah flex menjadi kolom */
+        }
+
+        .flower {
+            width: 0;
+            height: 0;
+            border-left: 50px solid transparent;
+            border-right: 50px solid transparent;
+            border-bottom: 100px solid pink;
+            position: relative;
+            animation: bloom 3s forwards;
+        }
+
+        .flower:before,
+        .flower:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -50px;
+            width: 100px;
+            height: 100px;
+            background: pink;
+            border-radius: 50%;
+            animation: bloom 3s forwards;
+        }
+
+        .flower:after {
+            left: 0;
+            top: -50px;
+        }
+
+        @keyframes bloom {
+            0% {
+                width: 0;
+                height: 0;
+            }
+            100% {
+                width: 50px;
+                height: 50px;
+            }
+        }
+
+        .text {
+            opacity: 0;
+            font-size: 24px;
+            color: #333;
+            margin-top: 20px;
+            animation: fadeIn 3s forwards;
+            animation-delay: 3s; /* Delay text appearance until flower is fully bloomed */
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        /* Gaya tambahan untuk elemen lain jika diperlukan */
+        .additional-text {
+            font-size: 20px;
+            color: #555;
+            margin-top: 10px;
+            opacity: 0;
+            animation: fadeIn 3s forwards;
+            animation-delay: 6s; /* Delay untuk teks tambahan */
+        }
+    </style>
+</head>
+<body>
+    <div class="header">Selamat menempuh kebahagiaan bersama</div>
+    <div class="flower"></div>
+    <div class="text">Barokallah Lakumaa,<br> Rais & Nova</div>
+    <div class="additional-text">Semoga Bahagia Selalu!</div> <!-- Teks tambahan -->
+
+    
+
+</body>
+</html>

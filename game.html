@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animasi Bunga Mekar dan Barakallah</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f8ff;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+            flex-direction: column; /* Mengatur arah flex menjadi kolom */
+        }
+
+        .flower {
+            width: 0;
+            height: 0;
+            border-left: 50px solid transparent;
+            border-right: 50px solid transparent;
+            border-bottom: 100px solid pink;
+            position: relative;
+            animation: bloom 3s forwards;
+        }
+
+        .flower:before,
+        .flower:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -50px;
+            width: 100px;
+            height: 100px;
+            background: pink;
+            border-radius: 50%;
+            animation: bloom 3s forwards;
+        }
+
+        .flower:after {
+            left: 0;
+            top: -50px;
+        }
+
+        @keyframes bloom {
+            0% {
+                width: 0;
+                height: 0;
+            }
+            100% {
+                width: 100px;
+                height: 100px;
+            }
+        }
+
+        .text {
+            opacity: 0;
+            font-size: 24px;
+            color: #333;
+            margin-top: 20px;
+            animation: fadeIn 3s forwards;
+            animation-delay: 3s; /* Delay text appearance until flower is fully bloomed */
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        /* Gaya tambahan untuk elemen lain jika diperlukan */
+        .additional-text {
+            font-size: 20px;
+            color: #555;
+            margin-top: 10px;
+            opacity: 0;
+            animation: fadeIn 3s forwards;
+            animation-delay: 6s; /* Delay untuk teks tambahan */
+        }
+    </style>
+</head>
+<body>
+    <div class="header">Selamat menempuh kebahagiaan bersama</div>
+    <div class="flower"></div>
+    <div class="text">Barokallah Lakumaa,<br> Rais & Nova</div>
+    <div class="additional-text">Semoga Bahagia Selalu!</div> <!-- Teks tambahan -->
+
+    
+
+</body>
+</html>
